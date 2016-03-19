@@ -14,6 +14,7 @@ ship.image = nil
 
 ship.controlled = false
 ship.dragEnabled = false
+ship.rotDragEnabled = false
 
 -- 0 = empty
 -- 1 = wall
@@ -48,18 +49,24 @@ function ship:load()
 end
 
 function ship:update(dt)
+	self.dragEnabled = true
+	self.rotDragEnabled = true
+
 	if self.controlled then
 		-- input
 		if love.keyboard.isDown("a") or love.keyboard.isDown("left") then
 			self.vrot = self.vrot - self.torque * dt
+			self.rotDragEnabled = false
 		end
 		if love.keyboard.isDown("d") or love.keyboard.isDown("right") then
 			self.vrot = self.vrot + self.torque * dt
+			self.rotDragEnabled = false
 		end
 
 		if love.keyboard.isDown("w") or love.keyboard.isDown("up") then
 			self.vx = self.vx + math.sin(self.rot) * self.thrust * dt
 			self.vy = self.vy - math.cos(self.rot) * self.thrust * dt
+			self.dragEnabled = false
 		end
 	end
 
@@ -68,9 +75,11 @@ function ship:update(dt)
 	self.x = self.x + self.vx * dt
 	self.y = self.y + self.vy * dt
 
-	if self.dragEnabled then
-		-- drag
+	-- drag
+	if self.rotDragEnabled then
 		self.vrot = self.vrot - self.vrot * self.rotDragFactor* dt
+	end
+	if self.dragEnabled then
 		self.vx = self.vx - self.vx * self.dragFactor * dt
 		self.vy = self.vy - self.vy * self.dragFactor * dt
 	end
@@ -78,10 +87,4 @@ end
 
 function ship:draw()
 	love.graphics.draw(self.image, self.x, self.y, self.rot, 1, 1, self.image:getWidth() / 2, self.image:getHeight() / 2)
-end
-
-function ship:keypressed(key, scancode, isrepeat)
-	if key == "lshift" or key == "rshift" then
-		self.dragEnabled = not self.dragEnabled
-	end
 end
