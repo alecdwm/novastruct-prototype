@@ -3,7 +3,7 @@ player.worldX = 0 -- set inside the class, read only
 player.worldY = 0 -- set inside the class, read only
 player.localX = 7
 player.localY = 7
-player.walkSpeed = 4
+player.walkSpeed = 5
 player.sprintSpeed = 10
 player.image = nil
 player.parent = nil
@@ -29,38 +29,43 @@ function player:update(dt)
 		right = love.keyboard.isDown('d') or love.keyboard.isDown('right')
 		sprint = love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")
 
-		-- input
-		if up then self.timeUp = self.timeUp + dt
-		else self.timeUp = 0 end
+		-- countdown timers
+		if self.timeUp > 0 then
+			self.timeUp = self.timeUp - dt
+			if self.timeUp < 0 then self.timeUp = 0 end
+		end
+		if self.timeLeft > 0 then
+			self.timeLeft = self.timeLeft - dt
+			if self.timeLeft < 0 then self.timeLeft = 0 end
+		end
+		if self.timeDown > 0 then
+			self.timeDown = self.timeDown - dt
+			if self.timeDown < 0 then self.timeDown = 0 end
+		end
+		if self.timeRight > 0 then
+			self.timeRight = self.timeRight - dt
+			if self.timeRight < 0 then self.timeRight = 0 end
+		end
 
-		if left then self.timeLeft = self.timeLeft + dt
-		else self.timeLeft = 0 end
-
-		if down then self.timeDown = self.timeDown + dt
-		else self.timeDown = 0 end
-
-		if right then self.timeRight = self.timeRight + dt
-		else self.timeRight = 0 end
-
+		-- movement
 		local speed = self.walkSpeed
 		if sprint then speed = self.sprintSpeed end
 
-		-- movement
-		if self.timeUp > (1 / speed) then
-			self:moveStep(self.localX, self.localY - 1)
-			self.timeUp = self.timeUp - (1 / speed)
+		if up and not down and self.timeUp == 0 then
+			self:moveStep(self.localX, self.localY-1)
+			self.timeUp = (1 / speed)
 		end
-		if self.timeLeft > (1 / speed) then
-			self:moveStep(self.localX - 1, self.localY)
-			self.timeLeft = self.timeLeft - (1 / speed)
+		if left and not right and self.timeLeft == 0 then
+			self:moveStep(self.localX-1, self.localY)
+			self.timeLeft = (1 / speed)
 		end
-		if self.timeDown > (1 / speed) then
-			self:moveStep(self.localX, self.localY + 1)
-			self.timeDown = self.timeDown - (1 / speed)
+		if down and not up and self.timeDown == 0 then
+			self:moveStep(self.localX, self.localY+1)
+			self.timeDown = (1 / speed)
 		end
-		if self.timeRight > (1 / speed) then
-			self:moveStep(self.localX + 1, self.localY)
-			self.timeRight = self.timeRight - (1 / speed)
+		if right and not left and self.timeRight == 0 then
+			self:moveStep(self.localX+1, self.localY)
+			self.timeRight = (1 / speed)
 		end
 	end
 
