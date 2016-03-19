@@ -21,48 +21,47 @@ function player:load()
 end
 
 function player:update(dt)
-	if self.controlMode ~= "player" then
-		return
-	end
-	-- input
-	up = love.keyboard.isDown('w') or love.keyboard.isDown('up')
-	left = love.keyboard.isDown('a') or love.keyboard.isDown('left')
-	down = love.keyboard.isDown('s') or love.keyboard.isDown('down')
-	right = love.keyboard.isDown('d') or love.keyboard.isDown('right')
-	sprint = love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")
+	if self.controlMode == "player" then
+		-- input
+		up = love.keyboard.isDown('w') or love.keyboard.isDown('up')
+		left = love.keyboard.isDown('a') or love.keyboard.isDown('left')
+		down = love.keyboard.isDown('s') or love.keyboard.isDown('down')
+		right = love.keyboard.isDown('d') or love.keyboard.isDown('right')
+		sprint = love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")
 
-	-- input
-	if up then self.timeUp = self.timeUp + dt
-	else self.timeUp = 0 end
+		-- input
+		if up then self.timeUp = self.timeUp + dt
+		else self.timeUp = 0 end
 
-	if left then self.timeLeft = self.timeLeft + dt
-	else self.timeLeft = 0 end
+		if left then self.timeLeft = self.timeLeft + dt
+		else self.timeLeft = 0 end
 
-	if down then self.timeDown = self.timeDown + dt
-	else self.timeDown = 0 end
+		if down then self.timeDown = self.timeDown + dt
+		else self.timeDown = 0 end
 
-	if right then self.timeRight = self.timeRight + dt
-	else self.timeRight = 0 end
+		if right then self.timeRight = self.timeRight + dt
+		else self.timeRight = 0 end
 
-	local speed = self.walkSpeed
-	if sprint then speed = self.sprintSpeed end
+		local speed = self.walkSpeed
+		if sprint then speed = self.sprintSpeed end
 
-	-- movement
-	if self.timeUp > (1 / speed) then
-		self:moveStep(self.localX, self.localY - 1)
-		self.timeUp = self.timeUp - (1 / speed)
-	end
-	if self.timeLeft > (1 / speed) then
-		self:moveStep(self.localX - 1, self.localY)
-		self.timeLeft = self.timeLeft - (1 / speed)
-	end
-	if self.timeDown > (1 / speed) then
-		self:moveStep(self.localX, self.localY + 1)
-		self.timeDown = self.timeDown - (1 / speed)
-	end
-	if self.timeRight > (1 / speed) then
-		self:moveStep(self.localX + 1, self.localY)
-		self.timeRight = self.timeRight - (1 / speed)
+		-- movement
+		if self.timeUp > (1 / speed) then
+			self:moveStep(self.localX, self.localY - 1)
+			self.timeUp = self.timeUp - (1 / speed)
+		end
+		if self.timeLeft > (1 / speed) then
+			self:moveStep(self.localX - 1, self.localY)
+			self.timeLeft = self.timeLeft - (1 / speed)
+		end
+		if self.timeDown > (1 / speed) then
+			self:moveStep(self.localX, self.localY + 1)
+			self.timeDown = self.timeDown - (1 / speed)
+		end
+		if self.timeRight > (1 / speed) then
+			self:moveStep(self.localX + 1, self.localY)
+			self.timeRight = self.timeRight - (1 / speed)
+		end
 	end
 
 	-- update worldPos

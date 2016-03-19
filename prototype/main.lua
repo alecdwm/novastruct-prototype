@@ -5,6 +5,7 @@ require "ship"
 function love.load()
 	-- don't fuck with the pixel art, man
 	love.graphics.setDefaultFilter("nearest", "nearest", 0)
+	love.graphics.setNewFont("DejaVuSansMono.ttf", 11)
 
 	player:load()
 	ship:load()
@@ -42,13 +43,13 @@ function love.draw()
 	camera:unset()
 
 	-- UI
-	love.graphics.printf("Controls:\nPlayer: WASD\nShip: Arrow Keys\n\nSwap views with SPACEBAR\nScroll wheel to zoom!\n(-/+ also works)", 4, 4, 200, "left")
-	love.graphics.print("Novastruct ap0.001", love.graphics.getWidth(), love.graphics.getHeight(), 0, 1, 1, 140, 18)
+	love.graphics.printf("Player:\nWASD / ←↑↓→\nSHIFT to sprint\n\nShip:\nWAD / ←↑→\nSPACE to stand\n\nZoom:\nSCROLL / (-/+)", 4, 4, 200, "left")
+	love.graphics.print("Novastruct ap0.002", love.graphics.getWidth(), love.graphics.getHeight(), 0, 1, 1, 140, 18)
 end
 
 function love.update(dt)
-	player:update(dt)
 	ship:update(dt)
+	player:update(dt)
 	camera:update(dt)
 end
 
