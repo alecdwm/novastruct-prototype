@@ -92,27 +92,40 @@ end
 function player:moveStep(x, y)
 	if self.parent.map[y+1][x+1] == 0 then
 		-- space
-		return
-	end
-	if self.parent.map[y+1][x+1] == 1 then
+
+	elseif self.parent.map[y+1][x+1] == 1 then
 		-- wall
-		return
-	end
-	if self.parent.map[y+1][x+1] == 2 then
+
+	elseif self.parent.map[y+1][x+1] == 2 then
 		-- floor
 		self.localX = x
 		self.localY = y
-		return
-	end
-	if self.parent.map[y+1][x+1] == 3 then
-		-- display panel
-		return
-	end
-	if self.parent.map[y+1][x+1] == 4 then
-		-- control panel
+
+	elseif self.parent.map[y+1][x+1] == 3 then
+		-- flight display panel
+		self.localX = x
+		self.localY = y
+
+	elseif self.parent.map[y+1][x+1] == 4 then
+		-- flight control panel
 		self.localX = x
 		self.localY = y
 		self:pilotShip(self.parent)
+
+	elseif self.parent.map[y+1][x+1] == 5 then
+		-- airlock
+
+	elseif self.parent.map[y+1][x+1] == 6 then
+		-- fuel control panel
+		self.localX = x
+		self.localY = y
+
+	elseif self.parent.map[y+1][x+1] == 7 then
+		-- fuel line
+
+	elseif self.parent.map[y+1][x+1] == 8 then
+		-- engine
+
 	end
 end
 
