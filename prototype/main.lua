@@ -43,7 +43,7 @@ function love.draw()
 	camera:unset()
 
 	-- UI
-	love.graphics.printf("Player:\nWASD / ←↑↓→\nSHIFT to sprint\n\nShip:\nWAD / ←↑→\nSPACE to stand\n\nZoom:\nSCROLL / (-/+)", 4, 4, 200, "left")
+	love.graphics.printf("Player:\nWASD / ←↑↓→\nSHIFT to sprint\n\nShip:\nWAD / ←↑→\nSHIFT to toggle drag\nSPACE to stand\n\nZoom:\nSCROLL / (-/+)", 4, 4, 200, "left")
 	love.graphics.print("Novastruct ap0.002", love.graphics.getWidth(), love.graphics.getHeight(), 0, 1, 1, 140, 18)
 end
 
@@ -62,6 +62,7 @@ function love.keypressed(key, scancode, isrepeat)
 		love.event.quit()
 	end
 
+	ship:keypressed(key, scancode, isrepeat)
 	player:keypressed(key, scancode, isrepeat)
 
 	if key == "-" then

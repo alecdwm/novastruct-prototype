@@ -5,12 +5,15 @@ ship.vx = 0
 ship.vy = 0
 ship.rot = 0
 ship.vrot = 0
+ship.dragFactor = 0.2
+ship.rotDragFactor = 1
 
 ship.thrust = 40
 ship.torque = 6
 ship.image = nil
 
 ship.controlled = false
+ship.dragEnabled = false
 
 -- 0 = empty
 -- 1 = wall
@@ -64,8 +67,21 @@ function ship:update(dt)
 	self.rot = self.rot + self.vrot * dt
 	self.x = self.x + self.vx * dt
 	self.y = self.y + self.vy * dt
+
+	if self.dragEnabled then
+		-- drag
+		self.vrot = self.vrot - self.vrot * self.rotDragFactor* dt
+		self.vx = self.vx - self.vx * self.dragFactor * dt
+		self.vy = self.vy - self.vy * self.dragFactor * dt
+	end
 end
 
 function ship:draw()
 	love.graphics.draw(self.image, self.x, self.y, self.rot, 1, 1, self.image:getWidth() / 2, self.image:getHeight() / 2)
+end
+
+function ship:keypressed(key, scancode, isrepeat)
+	if key == "lshift" or key == "rshift" then
+		self.dragEnabled = not self.dragEnabled
+	end
 end
