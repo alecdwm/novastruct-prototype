@@ -4,6 +4,19 @@ camera.y = 0
 camera.sx = 1
 camera.sy = 1
 camera.rot = 0
+camera.follow = "player"
+
+function camera:update(dt)
+	if camera.follow == "player" then
+		camera.x = player.worldX
+		camera.y = player.worldY
+		camera.rot = player.parent.rot
+	elseif camera.follow == "ship" then
+		camera.x = ship.x
+		camera.y = ship.y
+		camera.rot = 0
+	end
+end
 
 function camera:set()
 	love.graphics.push()

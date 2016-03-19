@@ -10,23 +10,57 @@ ship.thrust = 40
 ship.torque = 6
 ship.image = nil
 
+ship.controlled = false
+
+-- 0 = empty
+-- 1 = wall
+-- 2 = floor
+-- 3 = glass
+-- 4 = control panel
+-- 5 = airlock
+-- 6 = fuel line
+-- 7 = engine
+
+ship.map = {
+	{0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0},
+	{0, 0, 1, 1, 2, 2, 3, 3, 3, 2, 2, 1, 1, 0},
+	{0, 1, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 1},
+	{0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1},
+	{0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1},
+	{1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1},
+	{5, 2, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1},
+	{5, 2, 5, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1},
+	{1, 1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1},
+	{0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1},
+	{0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1},
+	{0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 1},
+	{0, 1, 2, 2, 2, 2, 2, 4, 2, 2, 2, 2, 2, 1},
+	{0, 0, 1, 1, 2, 2, 6, 6, 6, 2, 2, 1, 1, 0},
+	{0, 0, 0, 0, 1, 1, 1, 6, 1, 1, 1, 0, 0, 0},
+	{0, 0, 0, 0, 0, 7, 7, 7, 7, 7, 0, 0, 0, 0},
+}
+
 function ship:load()
 	self.image = love.graphics.newImage("ship.png")
 end
 
 function ship:update(dt)
-	if love.keyboard.isDown("left") then
-		self.vrot = self.vrot - self.torque * dt
-	end
-	if love.keyboard.isDown("right") then
-		self.vrot = self.vrot + self.torque * dt
+	if self.controlled then
+		-- input
+		if love.keyboard.isDown("a") or love.keyboard.isDown("left") then
+			self.vrot = self.vrot - self.torque * dt
+		end
+		if love.keyboard.isDown("d") or love.keyboard.isDown("right") then
+			self.vrot = self.vrot + self.torque * dt
+		end
+
+		if love.keyboard.isDown("w") or love.keyboard.isDown("up") then
+			self.vx = self.vx + math.sin(self.rot) * self.thrust * dt
+			self.vy = self.vy - math.cos(self.rot) * self.thrust * dt
+		end
 	end
 
-	if love.keyboard.isDown("up") then
-		self.vx = self.vx + math.sin(self.rot) * self.thrust * dt
-		self.vy = self.vy - math.cos(self.rot) * self.thrust * dt
-	end
-
+	-- movement
 	self.rot = self.rot + self.vrot * dt
 	self.x = self.x + self.vx * dt
 	self.y = self.y + self.vy * dt

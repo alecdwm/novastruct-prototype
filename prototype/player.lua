@@ -1,12 +1,19 @@
 player = {}
 player.worldX = 0 -- set inside the class, read only
 player.worldY = 0 -- set inside the class, read only
-player.localX = 0
-player.localY = 0
+player.localX = 7
+player.localY = 7
 player.walkSpeed = 4
-player.rot = 0
+player.sprintSpeed = 10
 player.image = nil
 player.parent = nil
+
+player.timeUp = 0
+player.timeLeft = 0
+player.timeDown = 0
+player.timeRight = 0
+
+player.controlMode = "player"
 
 function player:load()
 	self.image = love.graphics.newImage("player.png")
@@ -14,59 +21,109 @@ function player:load()
 end
 
 function player:update(dt)
-	w = love.keyboard.isDown('w')
-	a = love.keyboard.isDown('a')
-	s = love.keyboard.isDown('s')
-	d = love.keyboard.isDown('d')
-	local moving = false
-	-- if w and not s then
-	-- 	moving = true
-	-- 	self.rot = 3 * math.pi / 2
-	-- 	if a then
-	-- 		self.rot = self.rot - math.pi / 4
-	-- 	end
-	-- 	if d then
-	-- 		self.rot = self.rot + math.pi / 4
-	-- 	end
-	-- 	elseif s and not w then
-
-	if w or a or s or d then
-		moving = true
-		if w then
-			self.rot = 3 * math.pi / 2
-		elseif a then
-			self.rot = math.pi
-		elseif s then
-			self.rot = math.pi / 2
-		elseif d then
-			self.rot = 0
-		end
+	if self.controlMode ~= "player" then
+		return
 	end
+	-- input
+	up = love.keyboard.isDown('w') or love.keyboard.isDown('up')
+	left = love.keyboard.isDown('a') or love.keyboard.isDown('left')
+	down = love.keyboard.isDown('s') or love.keyboard.isDown('down')
+	right = love.keyboard.isDown('d') or love.keyboard.isDown('right')
+	sprint = love.keyboard.isDown("lshift") or love.keyboard.isDown("rshift")
 
-	if moving then
-		self.localX = self.localX + math.cos(self.rot) * self.walkSpeed * dt
-		self.localY = self.localY + math.sin(self.rot) * self.walkSpeed * dt
+	-- input
+	if up then self.timeUp = self.timeUp + dt
+	else self.timeUp = 0 end
+
+	if left then self.timeLeft = self.timeLeft + dt
+	else self.timeLeft = 0 end
+
+	if down then self.timeDown = self.timeDown + dt
+	else self.timeDown = 0 end
+
+	if right then self.timeRight = self.timeRight + dt
+	else self.timeRight = 0 end
+
+	local speed = self.walkSpeed
+	if sprint then speed = self.sprintSpeed end
+
+	-- movement
+	if self.timeUp > (1 / speed) then
+		self:moveStep(self.localX, self.localY - 1)
+		self.timeUp = self.timeUp - (1 / speed)
+	end
+	if self.timeLeft > (1 / speed) then
+		self:moveStep(self.localX - 1, self.localY)
+		self.timeLeft = self.timeLeft - (1 / speed)
+	end
+	if self.timeDown > (1 / speed) then
+		self:moveStep(self.localX, self.localY + 1)
+		self.timeDown = self.timeDown - (1 / speed)
+	end
+	if self.timeRight > (1 / speed) then
+		self:moveStep(self.localX + 1, self.localY)
+		self.timeRight = self.timeRight - (1 / speed)
 	end
 end
 
 function player:draw()
-	self.worldX = self.parent.x + (self.localX * math.cos(self.parent.rot) - self.localY * math.sin(self.parent.rot))
-	self.worldY = self.parent.y + (self.localX * math.sin(self.parent.rot) + self.localY * math.cos(self.parent.rot))
+	local localX = self.localX - self.parent.image:getWidth() / 2
+	local localY = self.localY - self.parent.image:getHeight() / 2
+	self.worldX = self.parent.x + (localX * math.cos(self.parent.rot) - localY * math.sin(self.parent.rot))
+	self.worldY = self.parent.y + (localX * math.sin(self.parent.rot) + localY * math.cos(self.parent.rot))
 
-
-	-- local worldx = self.parent.x + (self.x)
-	-- local worldy = self.parent.y + self.y
 	love.graphics.draw(self.image, self.worldX, self.worldY, self.parent.rot)
-	-- love.graphics.draw(self.image, (self.parent.x or 0) + self.x, (self.parent.y or 0) + self.y, (self.parent.rot or 0) + self.rot, 1, 1)
-	-- love.graphics.draw(self.image, round((self.parent.x or 0) + self.x), round((self.parent.y or 0) + self.y), 0)
-	-- love.graphics.draw(self.image, round((self.parent.x or 0) + self.x), round((self.parent.y or 0) + self.y), (self.parent.rot or 0) + self.rot, 1, 1, self.image:getWidth() / 2, self.image:getHeight() / 2)
+end
+
+function player:keypressed(key, scancode, isrepeat)
+	if self.controlMode ~= "player" then
+		if key == "space" then
+			self:unpilotShip()
+		end
+		return
+	end
+end
+
+function player:moveStep(x, y)
+	if self.parent.map[y+1][x+1] == 0 then
+		-- space
+		return
+	end
+	if self.parent.map[y+1][x+1] == 1 then
+		-- wall
+		return
+	end
+	if self.parent.map[y+1][x+1] == 2 then
+		-- floor
+		self.localX = x
+		self.localY = y
+		return
+	end
+	if self.parent.map[y+1][x+1] == 3 then
+		-- display panel
+		return
+	end
+	if self.parent.map[y+1][x+1] == 4 then
+		-- control panel
+		self.localX = x
+		self.localY = y
+		self:pilotShip(self.parent)
+	end
+end
+
+function player:pilotShip(ship)
+	self.piloting = ship
+	self.piloting.controlled = true
+	self.controlMode = "ship"
+	camera.follow = "ship"
+end
+
+function player:unpilotShip()
+	self.piloting.controlled = false
+	self.controlMode = "player"
+	camera.follow = "player"
 end
 
 function player:setParent(parent)
 	self.parent = parent
-end
-
-function round(num, idp)
-  local mult = 10^(idp or 0)
-  return math.floor(num * mult + 0.5) / mult
 end

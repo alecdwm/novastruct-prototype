@@ -2,8 +2,6 @@ require "camera"
 require "player"
 require "ship"
 
-camFollow = "ship"
-
 function love.load()
 	-- don't fuck with the pixel art, man
 	love.graphics.setDefaultFilter("nearest", "nearest", 0)
@@ -51,16 +49,11 @@ end
 function love.update(dt)
 	player:update(dt)
 	ship:update(dt)
+	camera:update(dt)
+end
 
-	if camFollow == "player" then
-		camera.x = player.worldX
-		camera.y = player.worldY
-		camera.rot = player.parent.rot
-	elseif camFollow == "ship" then
-		camera.x = ship.x
-		camera.y = ship.y
-		camera.rot = 0
-	end
+function love.mousepressed(x, y, button, istouch)
+	print(camera:mousePosition())
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -68,13 +61,7 @@ function love.keypressed(key, scancode, isrepeat)
 		love.event.quit()
 	end
 
-	if key == "space" then
-		if camFollow == "ship" then
-			camFollow = "player"
-		else
-			camFollow = "ship"
-		end
-	end
+	player:keypressed(key, scancode, isrepeat)
 
 	if key == "-" then
 		camera:setScale(camera.sx * 2, camera.sy * 2)
