@@ -64,14 +64,15 @@ function player:update(dt)
 		self:moveStep(self.localX + 1, self.localY)
 		self.timeRight = self.timeRight - (1 / speed)
 	end
-end
 
-function player:draw()
+	-- update worldPos
 	local localX = self.localX - self.parent.image:getWidth() / 2
 	local localY = self.localY - self.parent.image:getHeight() / 2
 	self.worldX = self.parent.x + (localX * math.cos(self.parent.rot) - localY * math.sin(self.parent.rot))
 	self.worldY = self.parent.y + (localX * math.sin(self.parent.rot) + localY * math.cos(self.parent.rot))
+end
 
+function player:draw()
 	love.graphics.draw(self.image, self.worldX, self.worldY, self.parent.rot)
 end
 
