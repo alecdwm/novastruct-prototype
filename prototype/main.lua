@@ -1,12 +1,14 @@
 require "camera"
 require "player"
 require "ship"
+require "stars"
 
 function love.load()
 	-- don't fuck with the pixel art, man
 	love.graphics.setDefaultFilter("nearest", "nearest", 0)
 	love.graphics.setNewFont("DejaVuSansMono.ttf", 11)
 
+	stars:load()
 	player:load()
 	ship:load()
 	player:setParent(ship)
@@ -16,9 +18,18 @@ function love.load()
 	camera:setScale(0.05, 0.05)
 end
 
+function love.update(dt)
+	ship:update(dt)
+	player:update(dt)
+	camera:update(dt)
+	stars:update(dt)
+end
+
 function love.draw()
 	-- World
 	camera:set()
+
+	stars:draw()
 
 	love.graphics.setColor(241, 217, 26, 255)
 	love.graphics.circle("fill", 0, 0, 50, 32)
@@ -45,12 +56,6 @@ function love.draw()
 	-- UI
 	love.graphics.printf("Player:\nWASD / ↑←↓→\nSHIFT to sprint\n\nShip:\nWAD / ←↑→\nSPACE to stand\n\nZoom:\nSCROLL / (-/+)", 4, 4, 200, "left")
 	love.graphics.print("Novastruct ap0.002", love.graphics.getWidth(), love.graphics.getHeight(), 0, 1, 1, 140, 18)
-end
-
-function love.update(dt)
-	ship:update(dt)
-	player:update(dt)
-	camera:update(dt)
 end
 
 function love.mousepressed(x, y, button, istouch)

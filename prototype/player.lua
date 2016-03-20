@@ -1,7 +1,7 @@
 player = {}
 player.worldX = 0 -- set inside the class, read only
 player.worldY = 0 -- set inside the class, read only
-player.localX = 7
+player.localX = 15
 player.localY = 7
 player.walkSpeed = 5
 player.sprintSpeed = 10
@@ -16,6 +16,7 @@ player.timeRight = 0
 player.controlMode = "player"
 
 function player:load()
+	self.doorSound = love.audio.newSource("door.ogg")
 	self.image = love.graphics.newImage("player.png")
 	self.parent = {}
 end
@@ -90,42 +91,34 @@ function player:keypressed(key, scancode, isrepeat)
 end
 
 function player:moveStep(x, y)
-	if self.parent.map[y+1][x+1] == 0 then
-		-- space
+	local tile = self.parent.map[y+1][x+1]
 
-	elseif self.parent.map[y+1][x+1] == 1 then
-		-- wall
-
-	elseif self.parent.map[y+1][x+1] == 2 then
-		-- floor
+	if     tile == "empty" then
+	elseif tile == "wall" then
+	elseif tile == "floor" then
 		self.localX = x
 		self.localY = y
-
-	elseif self.parent.map[y+1][x+1] == 3 then
-		-- flight display panel
-		self.localX = x
-		self.localY = y
-
-	elseif self.parent.map[y+1][x+1] == 4 then
-		-- flight control panel
+	elseif tile == "glass" then
+	elseif tile == "flight_control" then
 		self.localX = x
 		self.localY = y
 		self:pilotShip(self.parent)
-
-	elseif self.parent.map[y+1][x+1] == 5 then
-		-- airlock
-
-	elseif self.parent.map[y+1][x+1] == 6 then
-		-- fuel control panel
+	elseif tile == "door" then
 		self.localX = x
 		self.localY = y
-
-	elseif self.parent.map[y+1][x+1] == 7 then
-		-- fuel line
-
-	elseif self.parent.map[y+1][x+1] == 8 then
-		-- engine
-
+		love.audio.stop(self.doorSound)
+		love.audio.play(self.doorSound)
+	elseif tile == "fuel_control" then
+		self.parent:playerInteractFuel(x+1, y+1)
+		-- self.localX = x
+		-- self.localY = y
+	elseif tile == "fuel_line" then
+	elseif tile == "thruster" then
+	elseif tile == "weapon" then
+	elseif tile == "weapon_control" then
+		self.parent:fire(x+1, y+1)
+		-- self.localX = x
+		-- self.localY = y
 	end
 end
 
