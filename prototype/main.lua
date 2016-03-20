@@ -1,3 +1,5 @@
+require "lib"
+require "tiles"
 require "camera"
 require "player"
 require "ship"

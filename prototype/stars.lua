@@ -2,7 +2,7 @@ stars = {}
 stars.stardust = {}
 
 function stars:load()
-	for i=0, 1000 do
+	for i=0, 5000 do
 		self.stardust[i] = {}
 		self.stardust[i].x = math.random(-1000, 1000)
 		self.stardust[i].y = math.random(-1000, 1000)
