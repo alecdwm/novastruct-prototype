@@ -11,6 +11,9 @@ function tiles:getTileTypeFromColor(hex)
 		return "floor"
 	end
 	if hex == "42A5F5" then
+		-- TODO: Write shader to set pixels outside of ship to black unless
+		--       there is a direct path from the pixel to the player which
+		--        passes through a 'glass' tile
 		return "glass"
 	end
 	if hex == "0D47A1" then
