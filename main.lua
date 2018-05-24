@@ -6,7 +6,6 @@ require "ship"
 require "stars"
 
 function love.load()
-	-- don't fuck with the pixel art, man
 	love.graphics.setDefaultFilter("nearest", "nearest", 0)
 	love.graphics.setNewFont("DejaVuSansMono.ttf", 11)
 
@@ -33,23 +32,23 @@ function love.draw()
 
 	stars:draw()
 
-	love.graphics.setColor(241, 217, 26, 255)
+	love.graphics.setColor(241/255, 217/255, 26/255, 255/255)
 	love.graphics.circle("fill", 0, 0, 50, 32)
 	love.graphics.circle("line", 0, 0, 80, 8)
 
-	love.graphics.setColor(17, 27, 26, 255)
+	love.graphics.setColor(17/255, 27/255, 26/255, 255/255)
 	love.graphics.circle("fill", 280, -80, 40, 4)
 	love.graphics.circle("line", 280, -80, 60, 4)
 
-	love.graphics.setColor(0, 194, 204, 255)
+	love.graphics.setColor(0, 194/255, 204/255, 255/255)
 	love.graphics.circle("fill", -300, 200, 80, 32)
 	love.graphics.arc("line", -300, 200, 120, 0, 3 * math.pi / 2, 32)
 
-	love.graphics.setColor(240, 80, 20, 255)
+	love.graphics.setColor(240/255, 80/255, 20/255, 255/255)
 	love.graphics.rectangle("fill", 100, 100, 80, 50)
 	love.graphics.rectangle("line", 90, 90, 100, 70)
 
-	love.graphics.setColor(255, 255, 255, 255)
+	love.graphics.setColor(255/255, 255/255, 255/255, 255/255)
 	ship:draw()
 	player:draw()
 

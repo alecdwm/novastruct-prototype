@@ -18,23 +18,21 @@ ship.rotDragEnabled = false
 
 function ship:load()
 	-- load images
-	self.image = love.graphics.newImage("ship.png")
+	self.imageData = love.image.newImageData("ship.png")
+	self.image = love.graphics.newImage(self.imageData)
 
 	-- load sounds
-	self.computerbeepSound = love.audio.newSource("computerbeep.ogg")
-	self.fireSound = love.audio.newSource("fire.ogg")
-	self.thrustSound = love.audio.newSource("thrust.ogg")
+	self.computerbeepSound = love.audio.newSource("computerbeep.ogg", "static")
+	self.fireSound = love.audio.newSource("fire.ogg", "static")
+	self.thrustSound = love.audio.newSource("thrust.ogg", "static")
 	self.thrustSound:setLooping(true)
 
 	-- construct map
 	self.map = {}
-	local imageData = self.image:getData()
-	local h = imageData:getHeight()
-	local w = imageData:getWidth()
-	for y=1, h do
-		for x=1, w do
+	for y=1, self.imageData:getHeight() do
+		for x=1, self.imageData:getWidth() do
 			if not self.map[y] then self.map[y]={} end
-			r, g, b, a = imageData:getPixel(x-1, y-1)
+			r, g, b, a = self.imageData:getPixel(x-1, y-1)
 			self.map[y][x] = tiles:getTileTypeFromColor(rgb_to_hex(r, g, b))
 		end
 	end

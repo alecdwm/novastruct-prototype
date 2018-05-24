@@ -16,7 +16,7 @@ player.timeRight = 0
 player.controlMode = "player"
 
 function player:load()
-	self.doorSound = love.audio.newSource("door.ogg")
+	self.doorSound = love.audio.newSource("door.ogg", "static")
 	self.image = love.graphics.newImage("player.png")
 	self.parent = {}
 end
